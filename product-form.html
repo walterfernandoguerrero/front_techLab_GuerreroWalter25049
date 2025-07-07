@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Producto</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1 id="form-title">Cargar Producto</h1>
+
+        <form id="product-form">
+            <input type="hidden" id="product-id">
+
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" required>
+            </div>
+            <div class="form-group">
+                <label for="descripcion">Descripción:</label>
+                <textarea id="descripcion" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="url_imagen">URL de Imagen:</label>
+                <input type="text" id="url_imagen">
+            </div>
+            <div class="form-group">
+                <label for="precio">Precio:</label>
+                <input type="number" id="precio" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="categoria">Categoría:</label>
+                <input type="number" id="categoria" required>
+            </div>
+            <div class="form-group">
+                <label for="stock">Stock:</label>
+                <input type="number" id="stock" required>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Guardar Producto</button>
+                <a href="index.html" class="btn-secondary">Volver a la Lista</a>
+            </div>
+            
+            <div id="form-message" class="message" style="display: none;"></div>
+        </form>
+    </div>
+
+    <script src="product-form.js"></script>
+</body>
+</html>
