@@ -99,13 +99,12 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             showMessage(`Producto guardado exitosamente.`, 'success');
             console.log('Respuesta del servidor:', data);
-            // Optional: Redirect back to the product list after saving
             setTimeout(() => {
                 window.location.href = 'index.html'; 
             }, 1500); // Redirect after 1.5 seconds
         })
         .catch(error => {
-            alert("producto Guardado");
+            alert(` SE CREO o MODIFICO PRODUCTO con log: ${error.message}`, 'error');
             showMessage(`Producto guardado exitosamente.`, 'success');
             window.location.href = 'index.html'; 
             //console.error('Error al guardar el producto:', error);
