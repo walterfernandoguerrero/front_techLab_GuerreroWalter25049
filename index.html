@@ -14,17 +14,20 @@
 
                 <div class="header-actions">
                     <button id="login-logout-btn" class="btn-primary">Ingresar</button>
+                    
                     <div id="add-btn-container" style="display: none;">
                         <a href="product-form.html" class="btn-primary">Agregar Nuevo Producto</a>
                     </div>
+                    
                     <button id="toggle-cart-btn" class="btn-secondary">🛒 Carrito (<span id="cart-item-count">0</span>)</button>
                 </div>
 
                 <div id="productos-lista" class="productos-grid">
                     <p>Cargando productos...</p>
                 </div>
+
                 <p id="error-message" class="error-message" style="display: none;">
-                    No se pudieron cargar los productos. Por favor, intente más tarde.
+                    No se pudieron cargar los productos. Por favor, intenta más tarde.
                 </p>
             </div>
         </div>
@@ -35,7 +38,7 @@
                 <p>El carrito está vacío.</p>
             </div>
             <div class="cart-summary">
-                <p>Total: <span id="cart-total-price">$0</span></p>
+                <p>Total: <span id="cart-total">$0</span></p>
                 <button id="finalize-purchase-btn" class="btn-primary" style="display: none;">Finalizar Compra</button>
                 <button id="clear-cart-btn" class="btn-danger" style="display: none;">Vaciar Carrito</button>
             </div>
