@@ -175,3 +175,84 @@ h1 {
     font-weight: bold;
     margin-top: 20px;
 }
+
+/* ... (Todo tu CSS existente) ... */
+/*nuevo desde aca----*/
+.header-actions {
+    display: flex; /* Para alinear el botón de login y agregar */
+    justify-content: space-between; /* Espacia los elementos */
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Oculta los contenedores de acciones en las tarjetas por defecto */
+/* NOTA: En script.js los mostraremos u ocultaremos dinámicamente */
+.producto-card .actions {
+    margin-top: 15px;
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 5px;
+    /* Por defecto, los ocultamos, y JS los mostrará si el usuario está logueado */
+    visibility: hidden;
+    opacity: 0;
+    height: 0; /* Para que no ocupen espacio si están ocultos */
+    overflow: hidden;
+    transition: visibility 0s, opacity 0.3s ease, height 0.3s ease;
+}
+
+.producto-card .actions.visible {
+    visibility: visible;
+    opacity: 1;
+    height: auto;
+}
+
+/* Estilos para el formulario de login (que estará en login-form.html) */
+.login-form-container {
+    max-width: 400px;
+    margin: 50px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-form-container h1 {
+    text-align: center;
+    color: #0056b3;
+    margin-bottom: 25px;
+}
+
+.login-form-container .form-group {
+    margin-bottom: 20px;
+}
+
+.login-form-container .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+.login-form-container .form-group input[type="text"],
+.login-form-container .form-group input[type="password"] {
+    width: calc(100% - 22px);
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+.login-form-container .btn-primary {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1em;
+    margin-top: 15px;
+}
+
+.login-form-container .message {
+    margin-top: 20px;
+    font-size: 0.95em;
+}

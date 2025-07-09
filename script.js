@@ -1,8 +1,23 @@
 document.addEventListener('DOMContentLoaded', () => {
     const productosListaDiv = document.getElementById('productos-lista');
     const errorMessageDiv = document.getElementById('error-message');
-    const endpointList = 'http://localhost:8080/producto/list'; // Your endpoint to list products
-    const endpointDelete = 'http://localhost:8080/producto/eliminar/'; // Your endpoint to delete a product
+    const loginLogoutBtn = document.getElementById('login-logout-btn');
+    const addBtnContainer = document.getElementById('add-btn-container');
+
+    const endpointList = 'http://localhost:8080/producto/list';
+    const endpointDelete = 'http://localhost:8080/producto/delete/';
+
+    // --- Funciones de Utilidad ---
+    function getCookie(name) {
+        const nameEQ = name + "=";
+        const ca = document.cookie.split(';');
+        for(let i=0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
 
     const formatPrice = (price) => {
         return new Intl.NumberFormat('es-AR', {
@@ -12,9 +27,64 @@ document.addEventListener('DOMContentLoaded', () => {
         }).format(price);
     };
 
+    // --- Lógica de Sesión ---
+    let isLoggedIn = false; // Variable global para el estado de la sesión
+
+    const checkLoginStatus = () => {
+        // Verifica si hay un estado de login en sessionStorage
+        const loggedInUser = sessionStorage.getItem('loggedInUser');
+        if (loggedInUser) {
+            isLoggedIn = true;
+            loginLogoutBtn.textContent = 'Salir';
+            addBtnContainer.style.display = 'block'; // Mostrar botón de agregar
+        } else {
+            isLoggedIn = false;
+            loginLogoutBtn.textContent = 'Ingresar';
+            addBtnContainer.style.display = 'none'; // Ocultar botón de agregar
+        }
+        // Después de verificar el estado, actualiza la visibilidad de los botones en las tarjetas
+        updateProductCardButtonsVisibility();
+    };
+
+    const login = (username) => {
+        sessionStorage.setItem('loggedInUser', username); // Guarda el usuario logueado
+        checkLoginStatus(); // Actualiza UI
+        alert(`¡Bienvenido, ${username}!`); // Mensaje de bienvenida
+        window.location.href = 'index.html'; // Redirige a la página principal
+    };
+
+    const logout = () => {
+        sessionStorage.removeItem('loggedInUser'); // Elimina el estado de login
+        isLoggedIn = false; // Reinicia la variable
+        checkLoginStatus(); // Actualiza UI
+        alert('Has cerrado sesión.');
+        window.location.href = 'index.html'; // Redirige a la página principal
+    };
+
+    // --- Manejo del botón Ingresar/Salir ---
+    loginLogoutBtn.addEventListener('click', () => {
+        if (isLoggedIn) {
+            logout();
+        } else {
+            window.location.href = 'login-form.html'; // Redirige al formulario de login
+        }
+    });
+
+    // --- Función para actualizar la visibilidad de los botones de las tarjetas ---
+    const updateProductCardButtonsVisibility = () => {
+        document.querySelectorAll('.producto-card .actions').forEach(actionsContainer => {
+            if (isLoggedIn) {
+                actionsContainer.classList.add('visible'); // Muestra los botones
+            } else {
+                actionsContainer.classList.remove('visible'); // Oculta los botones
+            }
+        });
+    };
+
+    // --- Funciones de Carga y Eliminación de Productos ---
     const fetchProducts = () => {
-        productosListaDiv.innerHTML = '<p>Cargando productos...</p>'; // Show loading message
-        errorMessageDiv.style.display = 'none'; // Hide error message
+        productosListaDiv.innerHTML = '<p>Cargando productos...</p>';
+        errorMessageDiv.style.display = 'none';
 
         fetch(endpointList)
             .then(response => {
@@ -24,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return response.json();
             })
             .then(productos => {
-                productosListaDiv.innerHTML = ''; // Clear loading message
+                productosListaDiv.innerHTML = '';
 
                 if (productos.length === 0) {
                     productosListaDiv.innerHTML = '<p>No hay productos disponibles en este momento.</p>';
@@ -52,14 +122,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     productosListaDiv.appendChild(productoCard);
                 });
 
-                // Attach event listeners for delete buttons AFTER they are added to the DOM
+                // Re-verificar la visibilidad de los botones de las tarjetas después de cargarlos
+                updateProductCardButtonsVisibility();
+
+                // Añadir event listeners para los botones de eliminar
                 document.querySelectorAll('.delete-btn').forEach(button => {
-                    button.addEventListener('click', (event) => {
-                        const productId = event.target.dataset.id;
-                        if (confirm(`¿Estás seguro de que quieres eliminar el producto con ID: ${productId}?`)) {
-                            deleteProduct(productId);
-                        }
-                    });
+                    // Solo añadir el listener si el botón está visible (o lo estará)
+                    // Esto es para asegurarse de que no se pueda eliminar si no está logueado
+                    if (isLoggedIn) {
+                        button.addEventListener('click', (event) => {
+                            const productId = event.target.dataset.id;
+                            if (confirm(`¿Estás seguro de que quieres eliminar el producto con ID: ${productId}?`)) {
+                                deleteProduct(productId);
+                            }
+                        });
+                    } else {
+                         // Si no está logueado, podríamos deshabilitar los botones explícitamente o solo su click
+                         button.setAttribute('disabled', 'true');
+                    }
                 });
             })
             .catch(error => {
@@ -70,26 +150,29 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const deleteProduct = (id) => {
+        const csrfToken = getCookie('XSRF-TOKEN');
+
         fetch(endpointDelete + id, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+                'X-XSRF-TOKEN': csrfToken
+            }
         })
         .then(response => {
             if (!response.ok) {
-                // If the backend sends an error response (e.g., 404, 500)
-                // Try to parse error message if available, otherwise default
                 return response.json().catch(() => ({ message: 'Error desconocido al eliminar el producto.' }))
                                .then(err => { throw new Error(err.message || 'Error en la respuesta del servidor.'); });
             }
-            // No need to parse JSON if backend returns 204 No Content
             console.log(`Producto con ID ${id} eliminado correctamente.`);
-            fetchProducts(); // Reload the product list
+            fetchProducts();
         })
         .catch(error => {
             console.error('Error al eliminar el producto:', error);
-            alert(`No se pudo eliminar el producto: ${error.message}`); // Show alert to user
+            alert(`No se pudo eliminar el producto: ${error.message}`);
         });
     };
 
-    // Initial fetch when the page loads
-    fetchProducts();
+    // --- Inicialización ---
+    checkLoginStatus(); // Verifica el estado de login al cargar la página
+    fetchProducts(); // Carga los productos
 });
