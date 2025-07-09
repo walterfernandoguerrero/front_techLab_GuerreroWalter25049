@@ -1,9 +1,21 @@
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 20px;
+    padding: 0; /* Quitamos el padding del body para que el layout ocupe todo el ancho */
     background-color: #f4f4f4;
     color: #333;
+}
+
+.main-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    min-height: 100vh; /* Para que ocupe al menos toda la altura de la ventana */
+}
+
+.content-area {
+    flex-grow: 1; /* Ocupa todo el espacio disponible */
+    padding: 20px;
 }
 
 .container {
@@ -21,7 +33,7 @@ h1 {
     margin-bottom: 30px;
 }
 
-/* --- Buttons Styles --- */
+/* --- Estilos de Botones --- */
 .btn-primary {
     display: inline-block;
     padding: 10px 20px;
@@ -50,7 +62,7 @@ h1 {
     border: none;
     cursor: pointer;
     font-size: 0.9em;
-    margin-left: 5px; /* Spacing between buttons */
+    margin-left: 5px;
 }
 
 .btn-secondary:hover {
@@ -75,7 +87,16 @@ h1 {
     background-color: #c82333;
 }
 
-/* --- Product Grid Styles --- */
+/* --- Estilos de la Grilla de Productos --- */
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap; /* Permitir que los botones se envuelvan en pantallas pequeñas */
+    gap: 10px; /* Espacio entre los botones en el encabezado */
+}
+
 .productos-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -91,7 +112,7 @@ h1 {
     transition: transform 0.2s ease-in-out;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Pushes content and actions to ends */
+    justify-content: space-between;
 }
 
 .producto-card:hover {
@@ -119,14 +140,43 @@ h1 {
 
 .producto-card .actions {
     margin-top: 15px;
-    text-align: right; /* Align buttons to the right */
+    text-align: right;
     display: flex;
-    justify-content: flex-end; /* Align buttons to the right within flex container */
-    flex-wrap: wrap; /* Allow buttons to wrap if too many */
-    gap: 5px; /* Space between buttons */
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 5px;
+    visibility: hidden;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    transition: visibility 0s, opacity 0.3s ease, height 0.3s ease;
 }
 
-/* --- Form Styles --- */
+.producto-card .actions.visible {
+    visibility: visible;
+    opacity: 1;
+    height: auto;
+}
+
+/* Nuevos estilos para el input de cantidad y el botón de compra en la tarjeta */
+.buy-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px dashed #eee;
+}
+
+.buy-controls input[type="number"] {
+    width: 60px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+}
+
+/* --- Estilos del Formulario --- */
 .form-group {
     margin-bottom: 15px;
 }
@@ -138,18 +188,18 @@ h1 {
 .form-group input[type="text"],
 .form-group input[type="number"],
 .form-group textarea {
-    width: calc(100% - 22px); /* Adjust width considering padding and border */
+    width: calc(100% - 22px);
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    box-sizing: border-box; /* Include padding and border in total width */
+    box-sizing: border-box;
 }
 .form-actions {
     margin-top: 20px;
     text-align: center;
 }
 
-/* --- Message Styles (for form) --- */
+/* --- Estilos de Mensajes (para formularios) --- */
 .message {
     margin-top: 15px;
     padding: 10px;
@@ -168,7 +218,7 @@ h1 {
     border-color: #f5c6cb;
 }
 
-/* --- General Error Message (for list page) --- */
+/* --- Mensaje de Error General (para la página de lista) --- */
 .error-message {
     color: #dc3545;
     text-align: center;
@@ -176,39 +226,7 @@ h1 {
     margin-top: 20px;
 }
 
-/* ... (Todo tu CSS existente) ... */
-/*nuevo desde aca----*/
-.header-actions {
-    display: flex; /* Para alinear el botón de login y agregar */
-    justify-content: space-between; /* Espacia los elementos */
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-/* Oculta los contenedores de acciones en las tarjetas por defecto */
-/* NOTA: En script.js los mostraremos u ocultaremos dinámicamente */
-.producto-card .actions {
-    margin-top: 15px;
-    text-align: right;
-    display: flex;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-    gap: 5px;
-    /* Por defecto, los ocultamos, y JS los mostrará si el usuario está logueado */
-    visibility: hidden;
-    opacity: 0;
-    height: 0; /* Para que no ocupen espacio si están ocultos */
-    overflow: hidden;
-    transition: visibility 0s, opacity 0.3s ease, height 0.3s ease;
-}
-
-.producto-card .actions.visible {
-    visibility: visible;
-    opacity: 1;
-    height: auto;
-}
-
-/* Estilos para el formulario de login (que estará en login-form.html) */
+/* --- Estilos para el Formulario de Login --- */
 .login-form-container {
     max-width: 400px;
     margin: 50px auto;
@@ -255,4 +273,99 @@ h1 {
 .login-form-container .message {
     margin-top: 20px;
     font-size: 0.95em;
+}
+
+/* --- Estilos del Carrito de Compras (Sidebar) --- */
+.shopping-cart-sidebar {
+    width: 300px;
+    background-color: #f8f9fa;
+    border-left: 1px solid #ddd;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    position: sticky; /* Se mantiene en su lugar al hacer scroll */
+    top: 0;
+    min-height: 100vh; /* Para que el sidebar ocupe toda la altura */
+    transition: transform 0.3s ease-in-out; /* Animación de mostrar/ocultar */
+    transform: translateX(0); /* Por defecto visible */
+}
+
+.shopping-cart-sidebar.hidden {
+    transform: translateX(100%); /* Oculto a la derecha */
+    position: fixed; /* Necesario para que translateX funcione correctamente fuera del flujo */
+    right: 0;
+    top: 0;
+    height: 100vh;
+}
+
+.shopping-cart-sidebar h2 {
+    color: #007bff;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#cart-items {
+    max-height: calc(100vh - 200px); /* Altura máxima para los ítems, ajusta según el tamaño de tu header/footer */
+    overflow-y: auto; /* Scroll si hay muchos ítems */
+    margin-bottom: 20px;
+    padding-right: 5px; /* Para que no se corte el scrollbar */
+}
+
+.cart-item-card {
+    background-color: #fff;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.cart-item-info {
+    flex-grow: 1;
+}
+
+.cart-item-info p {
+    margin: 2px 0;
+    font-size: 0.9em;
+}
+
+.cart-item-info strong {
+    color: #333;
+}
+
+.cart-item-remove {
+    background-color: #ffc107; /* Amarillo para eliminar del carrito */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 8px;
+    cursor: pointer;
+    font-size: 0.8em;
+    transition: background-color 0.3s ease;
+}
+
+.cart-item-remove:hover {
+    background-color: #e0a800;
+}
+
+.cart-summary {
+    border-top: 1px solid #ddd;
+    padding-top: 15px;
+    text-align: right;
+}
+
+.cart-summary p {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.cart-summary .btn-primary,
+.cart-summary .btn-danger {
+    width: 100%;
+    margin-left: 0; /* Quita el margen que se añade a todos los .btn */
+    margin-bottom: 10px;
 }

@@ -7,22 +7,39 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Nuestros Productos</h1>
+    <div class="main-layout">
+        <div class="content-area">
+            <div class="container">
+                <h1>Nuestros Productos</h1>
 
-        <div class="header-actions">
-            <button id="login-logout-btn" class="btn-primary">Ingresar</button>
-            <div id="add-btn-container" style="display: none;">
-                <a href="product-form.html" class="btn-primary">Agregar Nuevo Producto</a>
+                <div class="header-actions">
+                    <button id="login-logout-btn" class="btn-primary">Ingresar</button>
+                    <div id="add-btn-container" style="display: none;">
+                        <a href="product-form.html" class="btn-primary">Agregar Nuevo Producto</a>
+                    </div>
+                    <button id="toggle-cart-btn" class="btn-secondary">🛒 Carrito (<span id="cart-item-count">0</span>)</button>
+                </div>
+
+                <div id="productos-lista" class="productos-grid">
+                    <p>Cargando productos...</p>
+                </div>
+                <p id="error-message" class="error-message" style="display: none;">
+                    No se pudieron cargar los productos. Por favor, intente más tarde.
+                </p>
             </div>
         </div>
 
-        <div id="productos-lista" class="productos-grid">
-            <p>Cargando productos...</p>
+        <div id="shopping-cart-sidebar" class="shopping-cart-sidebar hidden">
+            <h2>Tu Carrito</h2>
+            <div id="cart-items">
+                <p>El carrito está vacío.</p>
+            </div>
+            <div class="cart-summary">
+                <p>Total: <span id="cart-total-price">$0</span></p>
+                <button id="finalize-purchase-btn" class="btn-primary" style="display: none;">Finalizar Compra</button>
+                <button id="clear-cart-btn" class="btn-danger" style="display: none;">Vaciar Carrito</button>
+            </div>
         </div>
-        <p id="error-message" class="error-message" style="display: none;">
-            No se pudieron cargar los productos. Por favor, intente más tarde.
-        </p>
     </div>
 
     <script src="script.js"></script>
